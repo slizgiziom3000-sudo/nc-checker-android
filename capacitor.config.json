@@ -1,0 +1,3 @@
+{"appId":"com.nc.checker","appName":"NC Checker","webDir":"www",
+"backgroundColor":"#000000",
+"plugins":{"CapacitorHttp":{"enabled":true}}}
