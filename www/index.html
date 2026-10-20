@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000"><title>NC Checker</title>
+<style>html,body{margin:0;background:#000;color:#fff;font:14px system-ui,sans-serif;height:100%}body{display:flex;align-items:center;justify-content:center}</style></head>
+<body><div id="m">Loading…</div>
+<script>
+// CHANGE THIS to your own GitHub name:
+var UPDATE_URL="https://raw.githubusercontent.com/slizgiziom3000-sudo/mc-updates/main/publish/";
+var PUB="BFM5mBOJihhFq0Ag6SrJp1NjMYYEpk_JxdHiFRLtK_jAZtIWMNSHA0U-sJi4xD9-s6vyb908H-v0QCbO9gLYpRE";
+var H=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.CapacitorHttp;
+window.mcBridge={fetchText:async function(url){
+  try{var u=new URL(url);
+    if(u.protocol!=="https:"||u.hostname!=="auth.roblox.com"||u.pathname!=="/v1/usernames/validate")return{error:"blocked url"};
+    var r=await H.get({url:u.href,responseType:"text",connectTimeout:9000,readTimeout:9000,headers:{"Accept":"application/json"}});
+    var b=typeof r.data==="string"?r.data:JSON.stringify(r.data);
+    return{status:r.status,body:b.slice(0,200000)};
+  }catch(e){return{error:String(e&&e.message||e).slice(0,120)}}}};
+function show(h){document.open();document.write(h);document.close()}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+async function txt(u,ms){var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);
+  try{var r=await fetch(u,{signal:c.signal,cache:"no-store"});if(!r.ok)throw Error(r.status);return await r.text()}finally{clearTimeout(t)}}
+(async function(){
+  var bundledV=parseInt(await txt("version.txt",3000),10)||0;
+  var cachedV=parseInt(lsGet("ncAppVer"),10)||0, cached=lsGet("ncAppPage");
+  var html=null;
+  if(cached&&cachedV>bundledV)html=cached;
+  if(!html)html=await txt("page.html",8000);
+  show(html);
+  // background update check: applied on next launch
+  try{
+    var v=parseInt((await txt(UPDATE_URL+"version.txt",6000)).trim(),10);
+    if(v>Math.max(bundledV,cachedV)){
+      var h=await txt(UPDATE_URL+"page.html",20000);
+      if(h.length>5000&&h.indexOf(PUB)>-1){lsSet("ncAppPage",h);lsSet("ncAppVer",String(v))}
+    }
+  }catch(e){}
+})().catch(function(e){document.getElementById("m").textContent="Error: "+e});
+</script></body></html>
