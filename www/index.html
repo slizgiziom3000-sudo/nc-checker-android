@@ -24,7 +24,7 @@ async function txt(u,ms){var c=new AbortController(),t=setTimeout(function(){c.a
   try{var r=await fetch(u,{signal:c.signal,cache:"no-store"});if(!r.ok)throw Error(r.status);return await r.text()}finally{clearTimeout(t)}}
 function show(h){
   var f=document.getElementById("f");
-  var inj="<script>try{window.mcBridge=parent.mcBridge;window.ncPlatform='apk';window.addEventListener('pagehide',function(){try{parent.__ncLog('iframe pagehide')}catch(e){}});window.addEventListener('error',function(e){try{parent.__ncLog('iframe ERR '+e.message)}catch(x){}})}catch(e){}<\/script>";
+  var inj="<script>try{window.mcBridge=parent.mcBridge;window.ncPlatform='apk';var of=window.fetch.bind(window);window.fetch=function(u,o){try{return parent.fetch(u,o).catch(function(){return of(u,o)})}catch(e){return of(u,o)}};window.addEventListener('pagehide',function(){try{parent.__ncLog('iframe pagehide')}catch(e){}});window.addEventListener('error',function(e){try{parent.__ncLog('iframe ERR '+e.message)}catch(x){}})}catch(e){}<\/script>";
   window.__ncLog=log;
   f.onload=function(){log("iframe loaded")};
   f.srcdoc=h.replace(/<head[^>]*>/i,function(m){return m+inj});
