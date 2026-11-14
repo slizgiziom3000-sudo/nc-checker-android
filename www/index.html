@@ -20,6 +20,13 @@ window.mcBridge={fetchText:async function(url){
     var b=typeof r.data==="string"?r.data:JSON.stringify(r.data);
     return{status:r.status,body:b.slice(0,200000)};
   }catch(e){return{error:String(e&&e.message||e).slice(0,120)}}}};
+window.mcBridge.postJson=async function(url,body){
+  try{var u=new URL(url);
+    if(u.protocol!=="https:"||u.hostname!=="discord.com"||u.pathname!=="/api/v9/unique-username/username-attempt-unauthed")return{error:"blocked url"};
+    var r=await H.post({url:u.href,responseType:"text",connectTimeout:9000,readTimeout:9000,headers:{"Content-Type":"application/json","Accept":"application/json"},data:{username:String(body&&body.username||"").slice(0,40)}});
+    var b=typeof r.data==="string"?r.data:JSON.stringify(r.data);
+    return{status:r.status,body:b.slice(0,20000)};
+  }catch(e){return{error:String(e&&e.message||e).slice(0,120)}}};
 async function txt(u,ms){var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);
   try{var r=await fetch(u,{signal:c.signal,cache:"no-store"});if(!r.ok)throw Error(r.status);return await r.text()}finally{clearTimeout(t)}}
 function show(h){
